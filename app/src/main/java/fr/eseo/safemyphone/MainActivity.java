@@ -39,7 +39,6 @@ public class MainActivity extends PreferenceActivity {
      * shown on tablets.
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
-    private boolean test;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
