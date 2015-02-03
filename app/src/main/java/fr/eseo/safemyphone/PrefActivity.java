@@ -35,6 +35,7 @@ public class PrefActivity extends PreferenceActivity {
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     static DevicePolicyManager devicePolicyManager;
     static ComponentName demoDeviceAdmin;
+    public static String notification_desc;
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -112,7 +113,7 @@ public class PrefActivity extends PreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    public static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+    public Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
@@ -143,6 +144,8 @@ public class PrefActivity extends PreferenceActivity {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
+                setNotification_desc(stringValue);
+
             }
             return true;
         }
@@ -157,7 +160,7 @@ public class PrefActivity extends PreferenceActivity {
      *
      * @see #sBindPreferenceSummaryToValueListener
      */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -170,6 +173,8 @@ public class PrefActivity extends PreferenceActivity {
     }
 
 
-
+    public void setNotification_desc(String notification_desc) {
+        this.notification_desc = notification_desc;
+    }
 
 }

@@ -1,5 +1,9 @@
 package fr.eseo.safemyphone;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,27 +11,71 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
-    Button buttonPref;
+
+    private Button buttonPref;
+    private Button addNotificationBtn;
+    private Button deleteNotificationBtn;
+    public String notificationTitle;
+    public String notificationDesc;
+    public final int NOTIFICATION_ID = 42;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         buttonPref = (Button) findViewById(R.id.preference);
-        buttonPref.setOnClickListener(myhandler1);
+        buttonPref.setOnClickListener(actionPreference);
+        addNotificationBtn = (Button) findViewById(R.id.nouvelle_notification);
+        addNotificationBtn.setOnClickListener(actionAjoutNotification);
+        deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
+        deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
     }
-    View.OnClickListener myhandler1 = new View.OnClickListener() {
+    View.OnClickListener actionPreference = new View.OnClickListener() {
         public void onClick(View v) {
             // it was the 1st button
             intent = new Intent(MainActivity.this, PrefActivity.class);
             startActivity(intent);
         }
     };
+    public View.OnClickListener actionAjoutNotification = new View.OnClickListener() {
+        public void onClick(View v) {
+            createNotification();
+            Toast.makeText(getBaseContext(), "Ajout d'une notification", Toast.LENGTH_SHORT).show();
+        }
+    };
+    View.OnClickListener actionSuppressionNotification = new View.OnClickListener() {
+        public void onClick(View v) {
+            deleteNotification();
+            Toast.makeText(getBaseContext(), "Suppression d'une notification", Toast.LENGTH_SHORT).show();
+        }
+    };
+    public void createNotification(){
+        //Récupération du notification Manager
+        final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
+        //Création de la notification avec spécification de l'icone de la notification et le texte qui apparait à la création de la notfication
+        final Notification notification = new Notification(R.drawable.notification, notificationTitle, System.currentTimeMillis());
 
+        //Definition de la redirection au moment du clique sur la notification. Dans notre cas la notification redirige vers notre application
+        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, NotificationHomeActivity.class), 0);
+
+        //Récupération du titre et description de la notfication
+        final String notificationTitle = getResources().getString(R.string.notification_title);
+        notificationDesc = PrefActivity.notification_desc;
+        //Notification & Vibration
+        notification.setLatestEventInfo(this, notificationTitle, notificationDesc, pendingIntent);
+
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+    private void deleteNotification(){
+        final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        //la suppression de la notification se fait grâce a son ID
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,4 +102,6 @@ public class MainActivity extends ActionBarActivity {
     public void onClick(){
         int id = 2;
     }
+
+
 }
