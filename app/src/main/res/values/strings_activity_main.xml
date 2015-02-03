@@ -2,6 +2,7 @@
 
     <!-- Strings related to Settings -->
 
+
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
     <string name="pref_service">Demarage du service</string>
@@ -11,11 +12,11 @@
 
 
     <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_default_display_name">Tentative de déverrouillage échouée</string>
 
     <string name="pref_title_add_friends_to_messages">Liste des notifications</string>
     <string-array name="pref_example_list_titles">
-        <item>Always</item>
+        <item>(Par Défault)</item>
         <item>When possible</item>
         <item>Never</item>
     </string-array>

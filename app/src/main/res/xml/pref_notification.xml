@@ -21,14 +21,14 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
 
-    <ListPreference
+    <!--<ListPreference
         android:key="sync_frequency"
         android:title="@string/pref_title_sync_frequency"
         android:entries="@array/pref_sync_frequency_titles"
         android:entryValues="@array/pref_sync_frequency_values"
         android:defaultValue="180"
         android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
+        android:positiveButtonText="@null" />-->
 
     <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
     <CheckBoxPreference
