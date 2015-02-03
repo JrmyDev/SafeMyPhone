@@ -5,6 +5,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -23,15 +24,24 @@ public class MainActivity extends ActionBarActivity {
     static final int ACTIVATION_REQUEST = 47; // identifies our request id
     DevicePolicyManager devicePolicyManager;
     ComponentName demoDeviceAdmin;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //recuperation valeur du switch
+        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        Boolean bool = prefs.getBoolean("switch",false);
         switch1 = (Switch) findViewById(R.id.switch1);
+        switch1.setChecked(bool);
         switch1.setOnClickListener(myhandler2);
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(myhandler1);
+
+
+
+
 
     }
     View.OnClickListener myhandler1 = new View.OnClickListener() {
@@ -45,14 +55,23 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v) {
             activateService();
             if (switch1.isChecked()) {
-                // Activate device administration
-                Intent intent = new Intent(
-                        DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                        demoDeviceAdmin);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                        "Your boss told you to do this");
-                startActivityForResult(intent, ACTIVATION_REQUEST);
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch",true).commit();
+                if(!devicePolicyManager.isAdminActive(demoDeviceAdmin)) {
+                    // Activate device administration
+                    Intent intent = new Intent(
+                            DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                            demoDeviceAdmin);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                            "Your boss told you to do this");
+                    startActivityForResult(intent, ACTIVATION_REQUEST);
+                }
+            }
+            else{
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch",false).commit();
+                devicePolicyManager.removeActiveAdmin(demoDeviceAdmin);
             }
             Log.d(TAG, "onCheckedChanged to: " + switch1.isChecked());
 
