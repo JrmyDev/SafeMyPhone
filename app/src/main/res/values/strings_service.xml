@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admin_receiver_password_failed">Echec d\'identification!</string>
+    <string name="admin_receiver_status_disabled">Service d\'administration désactivé</string>
+    <string name="admin_receiver_status_disable_warning">Le service d\'administration va être désactivé</string>
+    <string name="admin_receiver_status_enabled">Service d\'administration activé</string>
+    <string name="admin_receiver_status">Service d\'administration :</string>
+
+
+
+</resources>

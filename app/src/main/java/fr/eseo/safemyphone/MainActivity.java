@@ -18,13 +18,6 @@
         import android.text.TextUtils;
         import java.util.List;
 
-        import android.app.Activity;
-        import android.app.admin.DevicePolicyManager;
-        import android.content.ComponentName;
-        import android.content.Intent;
-        import android.os.Bundle;
-        import android.widget.Toast;
-
         /**
          * A {@link PreferenceActivity} that presents a set of application settings. On
          * handset devices, settings are presented as a single list. On tablets,
@@ -44,13 +37,7 @@
              * shown on tablets.
              */
             private static final boolean ALWAYS_SIMPLE_PREFS = false;
-            @Override
-            public void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                ComponentName cn=new ComponentName(this, AdminReceiver.class);
-                DevicePolicyManager mgr=
-                        (DevicePolicyManager)getSystemService(DEVICE_POLICY_SERVICE);
-            }
+
             @Override
             protected void onPostCreate(Bundle savedInstanceState) {
                 super.onPostCreate(savedInstanceState);
@@ -236,8 +223,6 @@
                     bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
                 }
             }
-
-
 
 
         }

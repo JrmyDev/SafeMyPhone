@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">SafeMyPhone</string>
+    <string name="activity_sample_device_admin">Administration</string>
+    <string name="sample_device_admin">Permission d\'administration</string>
+    <string name="sample_device_admin_description">Donner les permissions d\'administration suivante :
+    - administration du lockscreen</string>
+
+
 </resources>
