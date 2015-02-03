@@ -69,7 +69,6 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
                 //if you want to open front facing camera use this line
                 myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
-
                 //if you want to use the back facing camera
                 myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
             }
