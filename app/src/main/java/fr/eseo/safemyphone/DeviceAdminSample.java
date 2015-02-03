@@ -1,6 +1,7 @@
 package fr.eseo.safemyphone;
 
 import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -10,9 +11,9 @@ import android.widget.Toast;
  */
 public class DeviceAdminSample extends DeviceAdminReceiver {
 
-    void showToast(Context context, String msg) {
-        String status = context.getString(R.string.admin_receiver_status, msg);
-        Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
+    void showToast(Context context, String msg1) {
+        String msg = context.getString(R.string.admin_receiver_status)+msg1;
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -32,7 +33,17 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
     @Override
     public void onPasswordFailed(Context context, Intent intent) {
-        showToast(context, context.getString(R.string.admin_receiver_password_failed));
+        DevicePolicyManager mgr = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        int no = mgr.getCurrentFailedPasswordAttempts();
+
+        if(no<3)
+        {
+            showToast(context, context.getString(R.string.admin_receiver_password_failed));
+            System.out.println("test");
+            //afficher la notif
+            //prendre une photo
+        }
+
     }
 
 }
