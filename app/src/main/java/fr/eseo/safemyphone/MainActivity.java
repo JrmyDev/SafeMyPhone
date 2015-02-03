@@ -25,6 +25,7 @@ public class MainActivity extends ActionBarActivity {
     DevicePolicyManager devicePolicyManager;
     ComponentName demoDeviceAdmin;
     SharedPreferences prefs;
+    Intent intentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
