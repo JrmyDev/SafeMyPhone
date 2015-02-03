@@ -1,11 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">SafeMyPhone</string>
     <string name="activity_sample_device_admin">Administration</string>
     <string name="sample_device_admin">Permission d\'administration</string>
     <string name="sample_device_admin_description">Donner les permissions d\'administration suivante :
     - administration du lockscreen</string>
+    <string name="add_notification">Ajouter une notification</string>
+    <string name="delete_notification">Supprimer une notification</string>
+
+    <string name="notification">Notification www.tutos-android.com</string>
+    <string name="notification_title">Ma premiere notification www.tutos-android.com</string>
+    <string name="notification_desc">Cliquez sur moi je suis une notification</string>
     <string name="title_activity_main">SafeMyPhone</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
