@@ -1,28 +1,22 @@
 package fr.eseo.safemyphone;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import android.widget.Switch;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    private Button buttonPref;
-    private Button addNotificationBtn;
-    private Button deleteNotificationBtn;
-    public String notificationTitle;
-    public String notificationDesc;
-    public final int NOTIFICATION_ID = 42;
     Button buttonPref;
     Switch switch1;
     Intent intent;
@@ -33,17 +27,17 @@ public class MainActivity extends ActionBarActivity {
     SharedPreferences prefs;
     Intent intentService;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //recuperation valeur du switch
+        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        Boolean bool = prefs.getBoolean("switch",false);
+        switch1 = (Switch) findViewById(R.id.switch1);
+        switch1.setChecked(bool);
+        switch1.setOnClickListener(myhandler2);
         buttonPref = (Button) findViewById(R.id.preference);
-        buttonPref.setOnClickListener(actionPreference);
-        addNotificationBtn = (Button) findViewById(R.id.nouvelle_notification);
-        addNotificationBtn.setOnClickListener(actionAjoutNotification);
-        deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
-        deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
         buttonPref.setOnClickListener(myhandler1);
 
 
@@ -51,28 +45,13 @@ public class MainActivity extends ActionBarActivity {
 
 
     }
-    View.OnClickListener actionPreference = new View.OnClickListener() {
+    View.OnClickListener myhandler1 = new View.OnClickListener() {
         public void onClick(View v) {
             // it was the 1st button
             intent = new Intent(MainActivity.this, PrefActivity.class);
             startActivity(intent);
         }
     };
-    public View.OnClickListener actionAjoutNotification = new View.OnClickListener() {
-        public void onClick(View v) {
-            createNotification();
-            Toast.makeText(getBaseContext(), "Ajout d'une notification", Toast.LENGTH_SHORT).show();
-        }
-    };
-    View.OnClickListener actionSuppressionNotification = new View.OnClickListener() {
-        public void onClick(View v) {
-            deleteNotification();
-            Toast.makeText(getBaseContext(), "Suppression d'une notification", Toast.LENGTH_SHORT).show();
-        }
-    };
-    public void createNotification(){
-        //Récupération du notification Manager
-        final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
     View.OnClickListener myhandler2 = new View.OnClickListener() {
         public void onClick(View v) {
             activateService();
@@ -97,13 +76,9 @@ public class MainActivity extends ActionBarActivity {
             }
             Log.d(TAG, "onCheckedChanged to: " + switch1.isChecked());
 
-        //Création de la notification avec spécification de l'icone de la notification et le texte qui apparait à la création de la notfication
-        final Notification notification = new Notification(R.drawable.notification, notificationTitle, System.currentTimeMillis());
         }
     };
 
-        //Definition de la redirection au moment du clique sur la notification. Dans notre cas la notification redirige vers notre application
-        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, NotificationHomeActivity.class), 0);
     private void activateService() {
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
@@ -121,20 +96,6 @@ public class MainActivity extends ActionBarActivity {
                 return;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-        //Récupération du titre et description de la notfication
-        final String notificationTitle = getResources().getString(R.string.notification_title);
-        notificationDesc = PrefActivity.notification_desc;
-        //Notification & Vibration
-        notification.setLatestEventInfo(this, notificationTitle, notificationDesc, pendingIntent);
-
-        notificationManager.notify(NOTIFICATION_ID, notification);
-    }
-    private void deleteNotification(){
-        final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        //la suppression de la notification se fait grâce a son ID
-        notificationManager.cancel(NOTIFICATION_ID);
     }
 
     @Override
@@ -162,6 +123,4 @@ public class MainActivity extends ActionBarActivity {
     public void onClick(){
         int id = 2;
     }
-
-
 }
