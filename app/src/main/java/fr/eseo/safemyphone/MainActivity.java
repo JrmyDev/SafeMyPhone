@@ -13,16 +13,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.Switch;
 
 
 public class MainActivity extends ActionBarActivity {
-    Button buttonPref;
+    Button buttonPref, listeNotifications;
     Switch switch1;
     Intent intent;
     static final String TAG = "DeviceAdminSample";
     static final int ACTIVATION_REQUEST = 47; // identifies our request id
     DevicePolicyManager devicePolicyManager;
+    DeviceAdminSample deviceAdminSample;
     ComponentName demoDeviceAdmin;
     SharedPreferences prefs;
     Intent intentService;
@@ -37,14 +39,17 @@ public class MainActivity extends ActionBarActivity {
         switch1 = (Switch) findViewById(R.id.switch1);
         switch1.setChecked(bool);
         switch1.setOnClickListener(myhandler2);
+
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(myhandler1);
-
-
+        //bouton affichage des notifications
+        listeNotifications=(Button) findViewById(R.id.listeNotifications);
+        listeNotifications.setOnClickListener(myhandler3);
 
 
 
     }
+
     View.OnClickListener myhandler1 = new View.OnClickListener() {
         public void onClick(View v) {
             // it was the 1st button
@@ -52,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
         }
     };
+
     View.OnClickListener myhandler2 = new View.OnClickListener() {
         public void onClick(View v) {
             activateService();
@@ -79,8 +85,17 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    View.OnClickListener myhandler3 = new View.OnClickListener() {
+        public void onClick(View v) {
+            // it was the 1st button
+            intent = new Intent(MainActivity.this, ListeNotifications.class);
+            startActivity(intent);
+        }
+    };
+
     private void activateService() {
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        deviceAdminSample = new DeviceAdminSample();
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
     }
 
@@ -122,5 +137,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void onClick(){
         int id = 2;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        ExpandableListView list = (ExpandableListView) findViewById(R.id.listeNotificationsView);
     }
 }

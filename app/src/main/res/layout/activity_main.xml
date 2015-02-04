@@ -11,12 +11,10 @@
         android:layout_height="wrap_content"
         android:text="Nouvelle notification"
         android:id="@+id/nouvelle_notification"
-        android:layout_below="@+id/switch1"
+        android:layout_marginTop="63dp"
+        android:layout_below="@+id/switch3"
         android:layout_alignLeft="@+id/supprimer_notification"
-        android:layout_alignStart="@+id/supprimer_notification"
-        android:layout_marginTop="40dp"
-        android:layout_alignRight="@+id/supprimer_notification"
-        android:layout_alignEnd="@+id/supprimer_notification" />
+        android:layout_alignStart="@+id/supprimer_notification" />
 
     <Button
         android:layout_width="wrap_content"
@@ -25,10 +23,7 @@
         android:id="@+id/preference"
         android:layout_below="@+id/supprimer_notification"
         android:layout_alignLeft="@+id/supprimer_notification"
-        android:layout_alignStart="@+id/supprimer_notification"
-        android:layout_marginTop="36dp"
-        android:layout_alignRight="@+id/supprimer_notification"
-        android:layout_alignEnd="@+id/supprimer_notification" />
+        android:layout_alignStart="@+id/supprimer_notification" />
 
     TextView
         android:layout_width="wrap_content"
@@ -56,12 +51,10 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Démarrer le service"
-        android:id="@+id/service"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
+        android:id="@+id/TextService"
         android:layout_alignBottom="@+id/switch1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignLeft="@+id/textEmail"
+        android:layout_alignStart="@+id/textEmail" />
 
     <Button
         android:layout_width="wrap_content"
@@ -69,6 +62,55 @@
         android:text="Supprimer notification"
         android:id="@+id/supprimer_notification"
         android:layout_below="@+id/nouvelle_notification"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp" />
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Activer l&apos;envoie d&apos;e-mail"
+        android:id="@+id/textEmail"
+        android:layout_marginTop="39dp"
+        android:layout_below="@+id/switch1"
+        android:layout_alignRight="@+id/preference"
+        android:layout_alignEnd="@+id/preference" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch2"
+        android:checked="false"
+        android:layout_alignBottom="@+id/textEmail"
+        android:layout_alignLeft="@+id/switch1"
+        android:layout_alignStart="@+id/switch1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Activer les notifications"
+        android:id="@+id/textView"
+        android:layout_marginTop="44dp"
+        android:layout_below="@+id/switch2"
+        android:layout_alignLeft="@+id/textEmail"
+        android:layout_alignStart="@+id/textEmail" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch3"
+        android:checked="false"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignLeft="@+id/switch2"
+        android:layout_alignStart="@+id/switch2" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Voir photos"
+        android:id="@+id/listeNotifications"
+        android:layout_below="@+id/preference"
+        android:layout_alignRight="@+id/preference"
+        android:layout_alignEnd="@+id/preference"
+        android:layout_marginTop="26dp" />
 </RelativeLayout>

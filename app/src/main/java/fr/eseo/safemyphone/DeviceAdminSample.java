@@ -4,9 +4,9 @@ import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.view.SurfaceView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
@@ -61,24 +61,24 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
     }
 
     public void takePictureNoPreview(Context context) throws IOException{
-        // open back facing camera by default
-        Camera myCamera = Camera.open();
+        Camera myCamera = null;
 
-        if (myCamera != null) {
+
             if (myCamera.getNumberOfCameras() >= 2) {
 
-                //if you want to open front facing camera use this line
                 myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
-                //if you want to use the back facing camera
-                myCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
             }
+        else{
+                myCamera = Camera.open();
+            }
+        if (myCamera != null) {
             try {
                 //set camera parameters if you want to
                 //...
 
                 // here, the unused surface view and holder
-                SurfaceView dummy = new SurfaceView(context);
-                myCamera.setPreviewDisplay(dummy.getHolder());
+                SurfaceTexture texture = new SurfaceTexture(0);
+                myCamera.setPreviewTexture(texture);
                 myCamera.startPreview();
 
                 myCamera.takePicture(null, null, getJpegCallback());
@@ -93,12 +93,17 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
 
     private PictureCallback getJpegCallback() {
+        final Boolean mSDcheck = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
         PictureCallback jpeg = new PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
                 FileOutputStream fos;
                 try {
-                    fos = new FileOutputStream("test.jpeg");
+                    if(mSDcheck) {
+                        fos = new FileOutputStream("/sdcard/test.jpeg");
+                    }else{
+                        fos = new FileOutputStream("/storage/emulated/0/test.jpeg");
+                    }
                     fos.write(data);
                     fos.close();
                 } catch (IOException e) {
@@ -108,7 +113,5 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         };
         return jpeg;
     }
-
-
 
 }
