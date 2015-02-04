@@ -1,11 +1,7 @@
 package fr.eseo.safemyphone;
 
 import android.app.Activity;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -53,6 +49,9 @@ public class MainActivity extends ActionBarActivity {
         buttonPref.setOnClickListener(actionPreference);
         deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
         deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
+        listeNotifications = (Button) findViewById(R.id.listeNotifications);
+        listeNotifications.setOnClickListener(actionListeNotifications);
+
     }
     View.OnClickListener actionPreference = new View.OnClickListener() {
         public void onClick(View v) {
@@ -94,13 +93,14 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    View.OnClickListener myhandler3 = new View.OnClickListener() {
+    View.OnClickListener actionListeNotifications = new View.OnClickListener() {
         public void onClick(View v) {
             // it was the 1st button
             intent = new Intent(MainActivity.this, ListeNotifications.class);
             startActivity(intent);
         }
     };
+
 
     private void activateService() {
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
