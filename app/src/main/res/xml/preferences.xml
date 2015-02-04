@@ -34,12 +34,21 @@
     <PreferenceCategory android:title="E-mail">
         <EditTextPreference
             android:capitalize="words"
-            android:defaultValue="xxxx.xxxxx@gmail.com"
+            android:defaultValue="xxx@xxx.com"
             android:inputType="textEmailAddress"
-            android:key="example_text"
+            android:key="email"
             android:maxLines="1"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_title_adresse_email" />
+        <EditTextPreference
+            android:capitalize="words"
+            android:inputType="textPassword"
+            android:key="password"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_mot_de_passe" />
+
     </PreferenceCategory>
 </PreferenceScreen>

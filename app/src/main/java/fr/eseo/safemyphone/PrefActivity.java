@@ -3,15 +3,18 @@ package fr.eseo.safemyphone;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
+import android.text.InputType;
+import android.widget.EditText;
 
 /**
  * A {@link android.preference.PreferenceActivity} that presents a set of application settings. On
@@ -35,6 +38,9 @@ public class PrefActivity extends PreferenceActivity {
     static DevicePolicyManager devicePolicyManager;
     static ComponentName demoDeviceAdmin;
     public static String notification_desc;
+    public static String password;
+    public static  String email;
+    private SharedPreferences prefs;
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -50,11 +56,15 @@ public class PrefActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        addPreferencesFromResource(R.xml.preferences);
         // Initialize Device Policy Manager service and our receiver class
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
+        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        setEmail(prefs.getString("email", null));
+        setPassword(prefs.getString("password", null));
     }
+
 
     /**
      * Shows the simplified settings UI if the device configuration if the
@@ -71,11 +81,10 @@ public class PrefActivity extends PreferenceActivity {
         // use the older PreferenceActivity APIs.
         // Add 'general' preferences.
 
-        addPreferencesFromResource(R.xml.preferences);
-//        bindPreferenceSummaryToValue(findPreference("pref_service"));
         bindPreferenceSummaryToValue(findPreference("example_list"));
         bindPreferenceSummaryToValue(findPreference("example_text"));
-
+        bindPreferenceSummaryToValue(findPreference("password"));
+        bindPreferenceSummaryToValue(findPreference("email"));
     }
 
     /**
@@ -131,21 +140,24 @@ public class PrefActivity extends PreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            } else if (preference instanceof SwitchPreference) {
-                SwitchPreference switchP = (SwitchPreference) preference;
-
-                    if (switchP.isChecked()) {
-
-                    }
-
-
-
-
-            } else {
+            }else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
-                preference.setSummary(stringValue);
-                setNotification_desc(stringValue);
+                if(preference.getKey().equals("password")){
+                    EditText edit = ((EditTextPreference) preference).getEditText();
+                    edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    setPassword(stringValue);
+                    prefs.edit().putString("password",stringValue);
+                    preference.setSummary("xxxxxxxx");
+                }
+                else if(preference.getKey().equals("email")){
+                    setEmail(stringValue);
+                    prefs.edit().putString("email",stringValue);
+                    preference.setSummary(stringValue);
+                }else {
+                    preference.setSummary(stringValue);
+                    setNotification_desc(stringValue);
+                }
 
             }
             return true;
@@ -177,4 +189,19 @@ public class PrefActivity extends PreferenceActivity {
         this.notification_desc = notification_desc;
     }
 
+    public static String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

@@ -21,8 +21,6 @@ import android.widget.Toast;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static fr.eseo.safemyphone.PrefActivity.notification_desc;
-
 
 /**
  * Created by etudiant on 03/02/2015.
@@ -60,11 +58,16 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
         if(no>0)
         {
-            createNotification(context, intent, Resources.getSystem());
-            try{
-                takePictureNoPreview(context);
-            }catch(IOException e){
-                System.out.println("erreur"+e);
+            if(MainActivity.getSwitch1().isChecked()) {
+                if(MainActivity.getSwitch2().isChecked()){
+                    sendEmail(context);
+                    takePictureNoPreview(context);
+                }
+                if(MainActivity.getSwitch3().isChecked()){
+                    createNotification(context, intent, Resources.getSystem());
+                    takePictureNoPreview(context);
+                }
+
             }
 
             showToast(context, context.getString(R.string.admin_receiver_password_failed));
@@ -73,6 +76,11 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
             //prendre une photo
         }
 
+    }
+
+    private void sendEmail(Context context) {
+        String email = PrefActivity.getEmail();
+        String password = PrefActivity.getPassword();
     }
 
     public void createNotification(Context context,Intent intent, Resources res){
@@ -85,7 +93,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         //Récupération du titre et description de la notfication
         //final String notificationTitle = res.getString(R.string.notification_title);
         final String notificationTitle = context.getResources().getString(R.string.notification_title);
-        notificationDesc = notification_desc;
+        notificationDesc = PrefActivity.notification_desc;
 
         //Notification & Vibration
         // Definition de la redirection au moment du clique sur la notification. Dans notre cas la notification redirige vers notre application
@@ -95,10 +103,9 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         notification.setLatestEventInfo(context, notificationTitle, notificationDesc, pendingIntent);
 
         notificationManager.notify(NOTIFICATION_ID, notification);
-
     }
 
-    public void takePictureNoPreview(Context context) throws IOException{
+    public void takePictureNoPreview(Context context) throws RuntimeException{
         Camera myCamera = null;
 
 
@@ -116,7 +123,11 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
                 // here, the unused surface view and holder
                 SurfaceTexture texture = new SurfaceTexture(0);
-                myCamera.setPreviewTexture(texture);
+                try {
+                    myCamera.setPreviewTexture(texture);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 myCamera.startPreview();
 
                 myCamera.takePicture(null, null, getJpegCallback());
