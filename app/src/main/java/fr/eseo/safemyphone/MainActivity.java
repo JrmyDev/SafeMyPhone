@@ -52,8 +52,6 @@ public class MainActivity extends ActionBarActivity {
         listeNotifications=(Button) findViewById(R.id.listeNotifications);
         listeNotifications.setOnClickListener(myhandler3);
 
-        deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
-        deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
     }
     View.OnClickListener myhandler1 = new View.OnClickListener() {
         public void onClick(View v) {
