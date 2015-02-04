@@ -167,7 +167,6 @@ public class PrefActivity extends PreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
-
     public void setNotification_desc(String notification_desc) {
         this.notification_desc = notification_desc;
     }
