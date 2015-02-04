@@ -48,8 +48,6 @@ public class MainActivity extends ActionBarActivity {
         switch1.setOnClickListener(myhandler2);
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(actionPreference);
-        addNotificationBtn = (Button) findViewById(R.id.nouvelle_notification);
-        addNotificationBtn.setOnClickListener(actionAjoutNotification);
         deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
         deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
     }
@@ -60,12 +58,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
         }
     };
-    public View.OnClickListener actionAjoutNotification = new View.OnClickListener() {
-        public void onClick(View v) {
-            createNotification();
-            Toast.makeText(getBaseContext(), "Ajout d'une notification", Toast.LENGTH_SHORT).show();
-        }
-    };
+
     View.OnClickListener actionSuppressionNotification = new View.OnClickListener() {
         public void onClick(View v) {
             deleteNotification();
@@ -97,28 +90,12 @@ public class MainActivity extends ActionBarActivity {
             Log.d(TAG, "onCheckedChanged to: " + switch1.isChecked());
         }
     };
+
+
+
     private void activateService() {
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
-    }
-    public void createNotification(){
-        //Récupération du notification Manager
-        final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-        //Création de la notification avec spécification de l'icone de la notification et le texte qui apparait à la création de la notfication
-        final Notification notification = new Notification(R.drawable.notification, notificationTitle, System.currentTimeMillis());
-
-        //Definition de la redirection au moment du clique sur la notification. Dans notre cas la notification redirige vers notre application
-        final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-
-        //Récupération du titre et description de la notfication
-        final String notificationTitle = getResources().getString(R.string.notification_title);
-        notificationDesc = PrefActivity.notification_desc;
-
-        //Notification & Vibration
-        notification.setLatestEventInfo(this, notificationTitle, notificationDesc, pendingIntent);
-
-        notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     private void deleteNotification(){

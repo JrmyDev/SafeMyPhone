@@ -9,28 +9,12 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nouvelle notification"
-        android:id="@+id/nouvelle_notification"
-        android:layout_below="@+id/switch1"
-        android:layout_alignLeft="@+id/supprimer_notification"
-        android:layout_alignStart="@+id/supprimer_notification"
-        android:layout_marginTop="40dp"
-        android:layout_alignRight="@+id/supprimer_notification"
-        android:layout_alignEnd="@+id/supprimer_notification" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Preferences"
         android:id="@+id/preference"
         android:layout_below="@+id/supprimer_notification"
-        android:layout_alignLeft="@+id/supprimer_notification"
-        android:layout_alignStart="@+id/supprimer_notification"
-        android:layout_marginTop="36dp"
-        android:layout_alignRight="@+id/supprimer_notification"
-        android:layout_alignEnd="@+id/supprimer_notification" />
+        android:layout_centerHorizontal="true" />
 
-    TextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -68,7 +52,6 @@
         android:layout_height="wrap_content"
         android:text="Supprimer notification"
         android:id="@+id/supprimer_notification"
-        android:layout_below="@+id/nouvelle_notification"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
