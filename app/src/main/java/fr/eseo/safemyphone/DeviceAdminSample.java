@@ -11,15 +11,14 @@ import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
-import android.view.ContextThemeWrapper;
-import android.view.SurfaceView;
+import android.net.ConnectivityManager;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
