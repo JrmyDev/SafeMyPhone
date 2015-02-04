@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,12 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ExpandableListView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
-    private Button addNotificationBtn;
+    Button listeNotifications;
     private Button deleteNotificationBtn;
     public String notificationTitle;
     public String notificationDesc;
@@ -91,12 +94,19 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-
+    View.OnClickListener myhandler3 = new View.OnClickListener() {
+        public void onClick(View v) {
+            // it was the 1st button
+            intent = new Intent(MainActivity.this, ListeNotifications.class);
+            startActivity(intent);
+        }
+    };
 
     private void activateService() {
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
     }
+   
 
     private void deleteNotification(){
         final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -140,7 +150,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClick(){
-        int id = 2;
+    @Override
+    public void onResume(){
+        super.onResume();
+        ExpandableListView list = (ExpandableListView) findViewById(R.id.listeNotificationsView);
     }
 }
