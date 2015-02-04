@@ -11,6 +11,8 @@ import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.SurfaceView;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static fr.eseo.safemyphone.PrefActivity.notification_desc;
 
 
 /**
@@ -56,7 +60,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
         if(no>0)
         {
-            createNotification(context,intent,Resources.getSystem());
+            createNotification(context, intent, Resources.getSystem());
             try{
                 takePictureNoPreview(context);
             }catch(IOException e){
@@ -81,7 +85,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         //Récupération du titre et description de la notfication
         //final String notificationTitle = res.getString(R.string.notification_title);
         final String notificationTitle = context.getResources().getString(R.string.notification_title);
-        notificationDesc = PrefActivity.notification_desc;
+        notificationDesc = notification_desc;
 
         //Notification & Vibration
         // Definition de la redirection au moment du clique sur la notification. Dans notre cas la notification redirige vers notre application
@@ -91,6 +95,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         notification.setLatestEventInfo(context, notificationTitle, notificationDesc, pendingIntent);
 
         notificationManager.notify(NOTIFICATION_ID, notification);
+
     }
 
     public void takePictureNoPreview(Context context) throws IOException{

@@ -41,6 +41,12 @@ public class PrefActivity extends PreferenceActivity {
         setupSimplePreferencesScreen();
     }
 
+    public String initPreference(){
+        Preference preference =findPreference("example_text");
+        notification_desc = preference.getSummary().toString();
+        return notification_desc;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
