@@ -7,14 +7,22 @@ import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.net.ConnectivityManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -50,7 +58,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
 
     @Override
-    public void onPasswordFailed(Context context, Intent intent) {
+    public void onPasswordFailed(Context context, Intent intent)  {
         DevicePolicyManager mgr = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         int no = mgr.getCurrentFailedPasswordAttempts();
 
@@ -58,8 +66,8 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         {
             if(MainActivity.getSwitch1().isChecked()) {
                 if(MainActivity.getSwitch2().isChecked()){
-                    sendEmail(context);
                     takePictureNoPreview(context);
+                    sendEmail(context);
                 }
                 if(MainActivity.getSwitch3().isChecked()){
                     createNotification(context, intent, Resources.getSystem());
@@ -68,18 +76,40 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
             }
 
-
-            showToast(context, context.getString(R.string.admin_receiver_password_failed));
-            System.out.println("test");
-            //afficher la notif
-            //prendre une photo
         }
 
     }
 
-    private void sendEmail(Context context) {
-        String email = PrefActivity.getEmail();
-        String password = PrefActivity.getPassword();
+    private void sendEmail(Context context){
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        String email = prefs.getString("email", null);
+        String password = prefs.getString("password", null);
+        if(email.contains("gmail") && !password.equals("") && !email.equals("") && password!=null && email!=null)
+        {
+            try {
+                setMobileDataEnabled(context.getApplicationContext(),true);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            try {
+                GMailSender sender = new GMailSender(email, password);
+                String time = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss").format(new Date());
+                sender.sendMail("Vol de mobile","Quelqu'un s'est trompé de mot de passe sur votre portable le"+ time, email,email);
+                setMobileDataEnabled(context.getApplicationContext(), false);
+            } catch (Exception e) {
+                Log.e("SendMail", e.getMessage(), e);
+            }
+        }
+        else  Log.d("Erreur email", "Adresse non valide");
+
     }
 
     public void createNotification(Context context,Intent intent, Resources res){
@@ -162,6 +192,18 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         return jpeg;
     }
 
+    private void setMobileDataEnabled(Context context, boolean enabled) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        final ConnectivityManager conman = (ConnectivityManager)  context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final Class conmanClass = Class.forName(conman.getClass().getName());
+        final Field connectivityManagerField = conmanClass.getDeclaredField("mService");
+        connectivityManagerField.setAccessible(true);
+        final Object connectivityManager = connectivityManagerField.get(conman);
+        final Class connectivityManagerClass =  Class.forName(connectivityManager.getClass().getName());
+        final Method setMobileDataEnabledMethod = connectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+        setMobileDataEnabledMethod.setAccessible(true);
+
+        setMobileDataEnabledMethod.invoke(connectivityManager, enabled);
+    }
 
 
 }

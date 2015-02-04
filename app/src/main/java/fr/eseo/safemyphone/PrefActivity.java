@@ -54,7 +54,7 @@ public class PrefActivity extends PreferenceActivity {
         // Initialize Device Policy Manager service and our receiver class
         devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
-        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        prefs = getApplicationContext().getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
         setEmail(prefs.getString("email", null));
         setPassword(prefs.getString("password", null));
     }
@@ -141,12 +141,12 @@ public class PrefActivity extends PreferenceActivity {
                     EditText edit = ((EditTextPreference) preference).getEditText();
                     edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     setPassword(stringValue);
-                    prefs.edit().putString("password",stringValue);
+                    prefs.edit().putString("password",stringValue).commit();
                     preference.setSummary("xxxxxxxx");
                 }
                 else if(preference.getKey().equals("email")){
                     setEmail(stringValue);
-                    prefs.edit().putString("email",stringValue);
+                    prefs.edit().putString("email",stringValue).commit();
                     preference.setSummary(stringValue);
                 }else {
                     preference.setSummary(stringValue);

@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
     private static Switch switch1;
     private static Switch switch2;
     private static Switch switch3;
+    private static Switch switch4;
     static final String TAG = "DeviceAdminSample";
     static final int ACTIVATION_REQUEST = 47; // identifies our request id
     DevicePolicyManager devicePolicyManager;
@@ -34,25 +35,31 @@ public class MainActivity extends ActionBarActivity {
     SharedPreferences prefs;
     Intent intentService;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //recuperation valeur du switch
-        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        prefs = getApplicationContext().getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
         Boolean bool1 = prefs.getBoolean("switch1",false);
         Boolean bool2 = prefs.getBoolean("switch2",false);
         Boolean bool3 = prefs.getBoolean("switch3",false);
+        Boolean bool4 = prefs.getBoolean("switch4",false);
 
         switch1=(Switch) findViewById(R.id.switch1);
         getSwitch1().setChecked(bool1);
-        getSwitch1().setOnClickListener(myhandler2);
+        getSwitch1().setOnClickListener(myhandler1);
         switch2=(Switch) findViewById(R.id.switch2);
         getSwitch2().setChecked(bool2);
-        getSwitch2().setOnClickListener(myhandler3);
+        getSwitch2().setOnClickListener(myhandler2);
         switch3=(Switch) findViewById(R.id.switch3);
         getSwitch3().setChecked(bool3);
-        getSwitch3().setOnClickListener(myhandler4);
+        getSwitch3().setOnClickListener(myhandler3);
+        setSwitch4((Switch) findViewById(R.id.switch4));
+        getSwitch4().setChecked(bool4);
+        getSwitch4().setOnClickListener(myhandler4);
 
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(actionPreference);
@@ -60,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
         listeNotifications = (Button) findViewById(R.id.listeNotifications);
         listeNotifications.setOnClickListener(actionListeNotifications);
-
+        activateService();
     }
     View.OnClickListener actionPreference = new View.OnClickListener() {
         public void onClick(View v) {
@@ -76,10 +83,14 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(getBaseContext(), "Suppression d'une notification", Toast.LENGTH_SHORT).show();
         }
     };
-    View.OnClickListener myhandler2 = new View.OnClickListener() {
+    View.OnClickListener myhandler1 = new View.OnClickListener() {
         public void onClick(View v) {
-            activateService();
             if (switch1.isChecked()) {
+                switch2.setEnabled(true);
+                switch3.setEnabled(true);
+                switch3.setChecked(true);
+                prefs.edit().putBoolean("switch3",true).commit();
+                prefs.edit().putBoolean("switch2",false).commit();
                 //enregistrement valeur du switch
                 prefs.edit().putBoolean("switch1",true).commit();
                 if(!devicePolicyManager.isAdminActive(demoDeviceAdmin)) {
@@ -91,18 +102,32 @@ public class MainActivity extends ActionBarActivity {
                     intent1.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
                             "Your boss told you to do this");
                     startActivityForResult(intent1, ACTIVATION_REQUEST);
+                    switch4.setChecked(true);
+                    prefs.edit().putBoolean("switch4",true).commit();
+                }else{
+                    switch4.setChecked(true);
+                    prefs.edit().putBoolean("switch4",true).commit();
                 }
+
+
             }
             else{
                 //enregistrement valeur du switch
                 prefs.edit().putBoolean("switch1",false).commit();
-                devicePolicyManager.removeActiveAdmin(demoDeviceAdmin);
+                switch2.setEnabled(false);
+                switch3.setEnabled(false);
+                switch2.setChecked(false);
+                switch3.setChecked(false);
+                prefs.edit().putBoolean("switch2",false).commit();
+                prefs.edit().putBoolean("switch3",false).commit();
+
+
             }
             Log.d(TAG, "onCheckedChanged to: " + getSwitch1().isChecked());
         }
     };
     //handler du switch 2 (activation des emails)
-    View.OnClickListener myhandler3 = new View.OnClickListener() {
+    View.OnClickListener myhandler2 = new View.OnClickListener() {
         public void onClick(View v) {
             if (switch2.isChecked()) {
                 //enregistrement valeur du switch
@@ -116,7 +141,7 @@ public class MainActivity extends ActionBarActivity {
         }
     };
     //handler du switch 3 (activation des notifications)
-    View.OnClickListener myhandler4 = new View.OnClickListener() {
+    View.OnClickListener myhandler3 = new View.OnClickListener() {
         public void onClick(View v) {
             if (switch3.isChecked()) {
                 //enregistrement valeur du switch
@@ -131,11 +156,45 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    //handler du switch 4 (activation des droits d'admin)
+    View.OnClickListener myhandler4 = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (switch4.isChecked()) {
+                Intent intent1 = new Intent(
+                        DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent1.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                        demoDeviceAdmin);
+                intent1.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                        "Vous devez activer cela :");
+                startActivityForResult(intent1, ACTIVATION_REQUEST);
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch4",true).commit();
+
+            }
+            else{
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch4",false).commit();
+
+                devicePolicyManager.removeActiveAdmin(demoDeviceAdmin);
+                switch1.setChecked(false);
+                switch2.setChecked(false);
+                switch3.setChecked(false);
+                switch2.setEnabled(false);
+                switch3.setEnabled(false);
+                prefs.edit().putBoolean("switch1",false).commit();
+                prefs.edit().putBoolean("switch2",false).commit();
+                prefs.edit().putBoolean("switch3",false).commit();
+
+            }
+            Log.d(TAG, "onCheckedChanged to: " + getSwitch4().isChecked());
+        }
+    };
+
     View.OnClickListener actionListeNotifications = new View.OnClickListener() {
         public void onClick(View v) {
 
-         //   Intent intent2 = new Intent(MainActivity.this, ListeNotifications.class);
-          //  startActivity(intent2);
+           Intent intent2 = new Intent(MainActivity.this, ListeNotifications.class);
+           startActivity(intent2);
         }
     };
 
@@ -195,16 +254,19 @@ public class MainActivity extends ActionBarActivity {
         Boolean bool1 = prefs.getBoolean("switch1",false);
         Boolean bool2 = prefs.getBoolean("switch2",false);
         Boolean bool3 = prefs.getBoolean("switch3",false);
-
+        Boolean bool4 = prefs.getBoolean("switch4",false);
         switch1=(Switch) findViewById(R.id.switch1);
         getSwitch1().setChecked(bool1);
-        getSwitch1().setOnClickListener(myhandler2);
+        getSwitch1().setOnClickListener(myhandler1);
         switch2=(Switch) findViewById(R.id.switch2);
         getSwitch2().setChecked(bool2);
-        getSwitch2().setOnClickListener(myhandler3);
+        getSwitch2().setOnClickListener(myhandler2);
         switch3=(Switch) findViewById(R.id.switch3);
         getSwitch3().setChecked(bool3);
-        getSwitch3().setOnClickListener(myhandler4);
+        getSwitch3().setOnClickListener(myhandler3);
+        switch4=(Switch) findViewById(R.id.switch4);
+        getSwitch4().setChecked(bool4);
+        getSwitch4().setOnClickListener(myhandler4);
     }
 
 
@@ -230,5 +292,13 @@ public class MainActivity extends ActionBarActivity {
 
     public void setSwitch3(Switch switch3) {
         this.switch3 = switch3;
+    }
+
+    public static Switch getSwitch4() {
+        return switch4;
+    }
+
+    public static void setSwitch4(Switch switch4) {
+        MainActivity.switch4 = switch4;
     }
 }
