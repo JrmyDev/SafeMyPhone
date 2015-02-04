@@ -14,23 +14,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
-    Button listeNotifications;
-    private Button deleteNotificationBtn;
+    private Button deleteNotificationBtn,listeNotifications, buttonPref ;
     public String notificationTitle;
     public String notificationDesc;
     public final int NOTIFICATION_ID = 42;
-    Button buttonPref;
-    Switch switch1;
-    Intent intent;
+    private static Switch switch1;
+    private static Switch switch2;
+    private static Switch switch3;
     static final String TAG = "DeviceAdminSample";
     static final int ACTIVATION_REQUEST = 47; // identifies our request id
     DevicePolicyManager devicePolicyManager;
+    DeviceAdminSample deviceAdminSample;
     ComponentName demoDeviceAdmin;
     SharedPreferences prefs;
     Intent intentService;
@@ -41,10 +40,20 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         //recuperation valeur du switch
         prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
-        Boolean bool = prefs.getBoolean("switch",false);
-        switch1 = (Switch) findViewById(R.id.switch1);
-        switch1.setChecked(bool);
-        switch1.setOnClickListener(myhandler2);
+        Boolean bool1 = prefs.getBoolean("switch1",false);
+        Boolean bool2 = prefs.getBoolean("switch2",false);
+        Boolean bool3 = prefs.getBoolean("switch3",false);
+
+        switch1=(Switch) findViewById(R.id.switch1);
+        getSwitch1().setChecked(bool1);
+        getSwitch1().setOnClickListener(myhandler2);
+        switch2=(Switch) findViewById(R.id.switch2);
+        getSwitch2().setChecked(bool2);
+        getSwitch2().setOnClickListener(myhandler3);
+        switch3=(Switch) findViewById(R.id.switch3);
+        getSwitch3().setChecked(bool3);
+        getSwitch3().setOnClickListener(myhandler4);
+
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(actionPreference);
         deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
@@ -56,8 +65,8 @@ public class MainActivity extends ActionBarActivity {
     View.OnClickListener actionPreference = new View.OnClickListener() {
         public void onClick(View v) {
             // it was the 1st button
-            intent = new Intent(MainActivity.this, PrefActivity.class);
-            startActivity(intent);
+            Intent intent0 = new Intent(MainActivity.this, PrefActivity.class);
+            startActivity(intent0);
         }
     };
 
@@ -72,32 +81,61 @@ public class MainActivity extends ActionBarActivity {
             activateService();
             if (switch1.isChecked()) {
                 //enregistrement valeur du switch
-                prefs.edit().putBoolean("switch",true).commit();
+                prefs.edit().putBoolean("switch1",true).commit();
                 if(!devicePolicyManager.isAdminActive(demoDeviceAdmin)) {
                     // Activate device administration
-                    Intent intent = new Intent(
+                    Intent intent1 = new Intent(
                             DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                    intent1.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
                             demoDeviceAdmin);
-                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    intent1.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
                             "Your boss told you to do this");
-                    startActivityForResult(intent, ACTIVATION_REQUEST);
+                    startActivityForResult(intent1, ACTIVATION_REQUEST);
                 }
             }
             else{
                 //enregistrement valeur du switch
-                prefs.edit().putBoolean("switch",false).commit();
+                prefs.edit().putBoolean("switch1",false).commit();
                 devicePolicyManager.removeActiveAdmin(demoDeviceAdmin);
             }
-            Log.d(TAG, "onCheckedChanged to: " + switch1.isChecked());
+            Log.d(TAG, "onCheckedChanged to: " + getSwitch1().isChecked());
+        }
+    };
+    //handler du switch 2 (activation des emails)
+    View.OnClickListener myhandler3 = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (switch2.isChecked()) {
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch2",true).commit();
+            }
+            else{
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch2",false).commit();
+            }
+            Log.d(TAG, "onCheckedChanged to: " + getSwitch2().isChecked());
+        }
+    };
+    //handler du switch 3 (activation des notifications)
+    View.OnClickListener myhandler4 = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (switch3.isChecked()) {
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch3",true).commit();
+
+            }
+            else{
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch3",false).commit();
+            }
+            Log.d(TAG, "onCheckedChanged to: " + getSwitch3().isChecked());
         }
     };
 
     View.OnClickListener actionListeNotifications = new View.OnClickListener() {
         public void onClick(View v) {
-            // it was the 1st button
-            intent = new Intent(MainActivity.this, ListeNotifications.class);
-            startActivity(intent);
+
+         //   Intent intent2 = new Intent(MainActivity.this, ListeNotifications.class);
+          //  startActivity(intent2);
         }
     };
 
@@ -153,6 +191,44 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume(){
         super.onResume();
-        ExpandableListView list = (ExpandableListView) findViewById(R.id.listeNotificationsView);
+        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        Boolean bool1 = prefs.getBoolean("switch1",false);
+        Boolean bool2 = prefs.getBoolean("switch2",false);
+        Boolean bool3 = prefs.getBoolean("switch3",false);
+
+        switch1=(Switch) findViewById(R.id.switch1);
+        getSwitch1().setChecked(bool1);
+        getSwitch1().setOnClickListener(myhandler2);
+        switch2=(Switch) findViewById(R.id.switch2);
+        getSwitch2().setChecked(bool2);
+        getSwitch2().setOnClickListener(myhandler3);
+        switch3=(Switch) findViewById(R.id.switch3);
+        getSwitch3().setChecked(bool3);
+        getSwitch3().setOnClickListener(myhandler4);
+    }
+
+
+    public static Switch getSwitch1() {
+        return switch1;
+    }
+
+    public void setSwitch1(Switch switch1) {
+        this.switch1 = switch1;
+    }
+
+    public static Switch getSwitch2() {
+        return switch2;
+    }
+
+    public void setSwitch2(Switch switch2) {
+        this.switch2 = switch2;
+    }
+
+    public static Switch getSwitch3() {
+        return switch3;
+    }
+
+    public void setSwitch3(Switch switch3) {
+        this.switch3 = switch3;
     }
 }

@@ -11,9 +11,6 @@ import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.support.v7.app.ActionBarActivity;
-import android.view.ContextThemeWrapper;
-import android.view.SurfaceView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
@@ -27,6 +24,9 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
     public String notificationTitle;
     public String notificationDesc;
     public final int NOTIFICATION_ID = 42;
+    public NotificationManager notificationManager;
+    public Notification notification;
+
 
     void showToast(Context context, String msg1) {
         String msg = context.getString(R.string.admin_receiver_status)+msg1;
@@ -56,12 +56,18 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
         if(no>0)
         {
-            createNotification(context,intent,Resources.getSystem());
-            try{
-                takePictureNoPreview(context);
-            }catch(IOException e){
-                System.out.println("erreur"+e);
+            if(MainActivity.getSwitch1().isChecked()) {
+                if(MainActivity.getSwitch2().isChecked()){
+                    sendEmail(context);
+                    takePictureNoPreview(context);
+                }
+                if(MainActivity.getSwitch3().isChecked()){
+                    createNotification(context, intent, Resources.getSystem());
+                    takePictureNoPreview(context);
+                }
+
             }
+
 
             showToast(context, context.getString(R.string.admin_receiver_password_failed));
             System.out.println("test");
@@ -69,6 +75,11 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
             //prendre une photo
         }
 
+    }
+
+    private void sendEmail(Context context) {
+        String email = PrefActivity.getEmail();
+        String password = PrefActivity.getPassword();
     }
 
     public void createNotification(Context context,Intent intent, Resources res){
@@ -93,7 +104,7 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
-    public void takePictureNoPreview(Context context) throws IOException{
+    public void takePictureNoPreview(Context context) throws RuntimeException{
         Camera myCamera = null;
 
 
@@ -111,7 +122,11 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
                 // here, the unused surface view and holder
                 SurfaceTexture texture = new SurfaceTexture(0);
-                myCamera.setPreviewTexture(texture);
+                try {
+                    myCamera.setPreviewTexture(texture);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 myCamera.startPreview();
 
                 myCamera.takePicture(null, null, getJpegCallback());

@@ -1,17 +1,36 @@
 package fr.eseo.safemyphone;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Notification;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ListeNotifications extends ActionBarActivity {
 
+    private static List<Notification> listeNotif = new ArrayList<Notification>();
+    static ListView liste;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liste_notifications);
+        // it was the 1st button
+        liste = (ListView) findViewById(R.id.listeNotificationsView);
+        // Instanciating an array list (you don't need to do this,
+        // you already have yours).
+        //Notification notification = DeviceAdminSample.getMyDeviceSample().getNotification();
+      //  listeNotif.add(notification);
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<Notification> arrayAdapter = new ArrayAdapter<Notification>(  this,  android.R.layout.simple_list_item_1,  listeNotif );
+        liste.setAdapter(arrayAdapter);
     }
 
 
