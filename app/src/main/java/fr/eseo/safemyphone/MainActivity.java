@@ -1,12 +1,17 @@
 package fr.eseo.safemyphone;
 
+import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,28 +23,35 @@ import android.widget.Switch;
 public class MainActivity extends ActionBarActivity {
     private Button addNotificationBtn;
     private Button deleteNotificationBtn;
-    public String notificationDesc;
     public String notificationTitle;
+    public String notificationDesc;
     public final int NOTIFICATION_ID = 42;
     Button buttonPref;
     Switch switch1;
     Intent intent;
     static final String TAG = "DeviceAdminSample";
     static final int ACTIVATION_REQUEST = 47; // identifies our request id
-
-
+    DevicePolicyManager devicePolicyManager;
+    ComponentName demoDeviceAdmin;
+    SharedPreferences prefs;
+    Intent intentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //recuperation valeur du switch
+        prefs = this.getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
+        Boolean bool = prefs.getBoolean("switch",false);
+        switch1 = (Switch) findViewById(R.id.switch1);
+        switch1.setChecked(bool);
+        switch1.setOnClickListener(myhandler2);
         buttonPref = (Button) findViewById(R.id.preference);
         buttonPref.setOnClickListener(actionPreference);
         addNotificationBtn = (Button) findViewById(R.id.nouvelle_notification);
         addNotificationBtn.setOnClickListener(actionAjoutNotification);
         deleteNotificationBtn = (Button) findViewById(R.id.supprimer_notification);
         deleteNotificationBtn.setOnClickListener(actionSuppressionNotification);
-
     }
     View.OnClickListener actionPreference = new View.OnClickListener() {
         public void onClick(View v) {
@@ -60,6 +72,35 @@ public class MainActivity extends ActionBarActivity {
             Toast.makeText(getBaseContext(), "Suppression d'une notification", Toast.LENGTH_SHORT).show();
         }
     };
+    View.OnClickListener myhandler2 = new View.OnClickListener() {
+        public void onClick(View v) {
+            activateService();
+            if (switch1.isChecked()) {
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch",true).commit();
+                if(!devicePolicyManager.isAdminActive(demoDeviceAdmin)) {
+                    // Activate device administration
+                    Intent intent = new Intent(
+                            DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                            demoDeviceAdmin);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                            "Your boss told you to do this");
+                    startActivityForResult(intent, ACTIVATION_REQUEST);
+                }
+            }
+            else{
+                //enregistrement valeur du switch
+                prefs.edit().putBoolean("switch",false).commit();
+                devicePolicyManager.removeActiveAdmin(demoDeviceAdmin);
+            }
+            Log.d(TAG, "onCheckedChanged to: " + switch1.isChecked());
+        }
+    };
+    private void activateService() {
+        devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        demoDeviceAdmin = new ComponentName(this, DeviceAdminSample.class);
+    }
     public void createNotification(){
         //Récupération du notification Manager
         final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -78,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
         notification.setLatestEventInfo(this, notificationTitle, notificationDesc, pendingIntent);
 
         notificationManager.notify(NOTIFICATION_ID, notification);
-        }
+    }
 
     private void deleteNotification(){
         final NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -86,6 +127,20 @@ public class MainActivity extends ActionBarActivity {
         notificationManager.cancel(NOTIFICATION_ID);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ACTIVATION_REQUEST:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.i("DeviceAdminSample", "Administration enabled!");
+                } else {
+                    Log.i("DeviceAdminSample", "Administration enable FAILED!");
+                }
+                return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+   
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,6 +166,4 @@ public class MainActivity extends ActionBarActivity {
     public void onClick(){
         int id = 2;
     }
-
-
 }
