@@ -7,22 +7,19 @@ import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.net.ConnectivityManager;
-import android.util.Log;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
+import android.view.SurfaceView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**
@@ -76,40 +73,17 @@ public class DeviceAdminSample extends DeviceAdminReceiver {
 
             }
 
+            showToast(context, context.getString(R.string.admin_receiver_password_failed));
+            System.out.println("test");
+            //afficher la notif
+            //prendre une photo
         }
 
     }
 
-    private void sendEmail(Context context){
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("fr.eseo.safemyphone", Context.MODE_PRIVATE);
-        String email = prefs.getString("email", null);
-        String password = prefs.getString("password", null);
-        if(email.contains("gmail") && !password.equals("") && !email.equals("") && password!=null && email!=null)
-        {
-            try {
-                setMobileDataEnabled(context.getApplicationContext(),true);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-            try {
-                GMailSender sender = new GMailSender(email, password);
-                String time = new SimpleDateFormat("dd/MM/yyyy à HH:mm:ss").format(new Date());
-                sender.sendMail("Vol de mobile","Quelqu'un s'est trompé de mot de passe sur votre portable le"+ time, email,email);
-                setMobileDataEnabled(context.getApplicationContext(), false);
-            } catch (Exception e) {
-                Log.e("SendMail", e.getMessage(), e);
-            }
-        }
-        else  Log.d("Erreur email", "Adresse non valide");
-
+    private void sendEmail(Context context) {
+        String email = PrefActivity.getEmail();
+        String password = PrefActivity.getPassword();
     }
 
     public void createNotification(Context context,Intent intent, Resources res){
